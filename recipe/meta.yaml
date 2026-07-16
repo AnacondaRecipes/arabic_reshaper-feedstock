@@ -1,34 +1,36 @@
 {% set name = "arabic_reshaper" %}
-{% set version = "3.0.0" %}
+{% set version = "3.0.1" %}
 
 package:
-  name: {{ name|lower }}
+  name: {{ name }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: ffcd13ba5ec007db71c072f5b23f420da92ac7f268512065d49e790e62237099
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: a0d9b2a9fa29b5f2c1d705f407adf6ca4242405b9cac0e5cc09e6c4f3f8fb68c
 
 build:
-  noarch: python
   number: 0
-  # Note: --no-deps is currently required due to https://github.com/conda/conda-build/issues/3254
-  # Once resolved, it should be removed.
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<310]
 
 requirements:
   host:
-    - python >=3.6
     - pip
+    - python
+    - hatchling
   run:
-    - python >=3.6
-    - setuptools
-    - configparser
-    - future
+    - python
+  run_constrained:
+    - fonttools >=4.0
 
 test:
   imports:
     - arabic_reshaper
+  commands:
+    - pip check
+  requires:
+    - pip
 
 about:
   home: https://github.com/mpcabd/python-arabic-reshaper
@@ -36,6 +38,9 @@ about:
   license_family: MIT
   license_file: LICENSE
   summary: Reconstruct Arabic sentences to be used in applications that don't support Arabic
+  description: Reconstruct Arabic sentences to be used in applications that don't support Arabic
+  doc_url: https://github.com/mpcabd/python-arabic-reshaper
+  dev_url: https://github.com/mpcabd/python-arabic-reshaper
 
 extra:
   recipe-maintainers:
